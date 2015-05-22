@@ -1,0 +1,9 @@
+{
+    "dl_abs_script_path": "/home/whoeverest/playground/network-tester/downloader.py",
+    "intervals": [
+        {
+            "start": { "h": 2, "m": 0 },
+            "duration": 120
+        }
+    ]
+}
