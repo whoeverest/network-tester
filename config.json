@@ -1,8 +1,9 @@
 {
     "dl_abs_script_path": "/home/whoeverest/playground/network-tester/downloader.py",
+    "time_variance": 32,
     "intervals": [
         {
-            "start": { "h": 2, "m": 0 },
+            "start": { "h": 16, "m": 30 },
             "duration": 120
         }
     ]

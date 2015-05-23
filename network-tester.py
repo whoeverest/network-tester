@@ -3,6 +3,7 @@ import datetime as d
 from subprocess import Popen
 import json
 import signal
+import md5
 import sys
 
 config = json.loads(open('config.json', 'r').read())
@@ -34,7 +35,8 @@ def interval_to_datetimes(interval):
                                 day=now.day,
                                 hour=interval["start"]["h"],
                                 minute=interval["start"]["m"])
-    interval_end = interval_start + d.timedelta(minutes=interval["duration"])
+    displaced_start = interval_start + d.timedelta(minutes=calculate_todays_variance())
+    interval_end = displaced_start + d.timedelta(minutes=interval["duration"])
 
     return { "start": interval_start, "end": interval_end }
 
@@ -52,8 +54,17 @@ def kill_downloader_and_exit(signal, frame):
         dl.stop()
     exit(0)
 
+def calculate_todays_variance():
+    hash_obj = md5.new()
+    hash_obj.update(str(d.datetime.now().strftime('%Y-%m-%d')))
+    todays_hash = hash_obj.hexdigest()
+    todays_hash_ints = map(lambda ch: int(ch, 16), todays_hash)
+    todays_sum = reduce(lambda a, b: a + b, todays_hash_ints)
+    sign = -1 if todays_sum % 2 else 1
+    return sign * (todays_sum % config['time_variance'])
+
 dl = Downloader()
-intervals = config["intervals"]
+intervals = config['intervals']
 
 signal.signal(signal.SIGINT, kill_downloader_and_exit)
 signal.signal(signal.SIGTERM, kill_downloader_and_exit)
@@ -61,9 +72,9 @@ signal.signal(signal.SIGTERM, kill_downloader_and_exit)
 while True:  
     if time_in_any_interval(d.datetime.now(), intervals) and not dl.started():
         dl.start()
-        print 'started downloader'
+        print d.datetime.now(), 'started downloader'
     elif dl.started():
         dl.stop()
-        print 'stopped downloader'
+        print d.datetime.now(), 'stopped downloader'
 
     sleep(60)
