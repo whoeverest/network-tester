@@ -1,10 +1,10 @@
 {
-    "dl_abs_script_path": "/home/whoeverest/playground/network-tester/downloader.py",
-    "time_variance": 32,
+    "dl_abs_script_path": "/home/aleks/network-tester/downloader.py",
+    "time_variance": 0,
     "intervals": [
         {
-            "start": { "h": 16, "m": 30 },
-            "duration": 120
+            "start": { "h": 19, "m": 30 },
+            "duration": 10
         }
     ]
 }
